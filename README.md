@@ -9,8 +9,14 @@ pip install -r requirements.txt
 
 ### 2. Setup API Key
 ```bash
+# Set your OpenAI API key
 export OPENAI_API_KEY="your-api-key-here"
+
+# Optional: Set custom base URL
+export OPENAI_BASE_URL="https://api.openai.com/v1"
 ```
+
+**Important**: Never commit your actual API key to the repository. Use environment variables instead.
 
 ### 3. Run Experiments
 ```bash

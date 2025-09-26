@@ -18,7 +18,7 @@ SUPPORTED_MODELS = [
 DEFAULT_MODEL_CONFIG = {
     "test_model": "gpt-4o",
     "judge_model": "gpt-4o",  # 固定使用gpt-4o作为Judge
-    "api_key": "sk-zME4zIhFVHNdaf9U191IbKiiBCAd34CEFrbnb8KSUdH8CkWb",
+    "api_key": os.getenv("OPENAI_API_KEY", "YOUR_API_KEY_HERE"),
     "base_url": "https://api.nuwaapi.com/v1",
     "max_tokens": 80,
     "temperature": 0.0,
