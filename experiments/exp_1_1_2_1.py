@@ -6,9 +6,9 @@ Choice实验1.1_2.1：充分与不充分提示对比实验
 """
 
 from typing import Dict, Any, List
-from ..core.api_client import ChoiceAPIClient
-from ..core.evaluator import ChoiceEvaluator
-from ..core.utils import create_output_filename
+from core.api_client import ChoiceAPIClient
+from core.evaluator import ChoiceEvaluator
+from core.utils import create_output_filename
 
 class Experiment1_1_2_1:
     """实验1.1_2.1：充分与不充分提示对比实验"""
@@ -19,22 +19,47 @@ class Experiment1_1_2_1:
         self.evaluator = ChoiceEvaluator()
     
     def build_sufficient_prompt(self, element: Dict[str, Any]) -> str:
-        """构建充分提示的Choice prompt"""
+        """构建充分提示的Choice prompt（支持Choice和TFU格式）"""
         
-        question = element['question']
-        options = element['options']
-        passage = element.get('passage_text', '')
-        
-        # 构建选项文本
-        options_text = "\n".join(options)
-        
-        # 构建Facts部分（对应TFU的Facts）
-        facts_part = ""
-        if passage and passage.strip():
-            facts_part = f"Facts: {passage}\n"
-        
-        # 完整的充分提示（学习TFU的sufficient结构）
-        prompt = f"""Question: {question}
+        # 检测数据格式并获取相应字段
+        if 'facts' in element and 'conclusion' in element:
+            # TFU格式：使用Conclusion和Facts字段
+            question = element['conclusion']
+            facts = element['facts']
+            options = element['options']
+            
+            # 构建选项文本
+            options_text = "\n".join(options)
+            
+            # TFU格式的充分提示（对应原始TFU实验）
+            prompt = f"""Question: {question}
+Facts: {facts}
+Task: Based on the given facts, determine whether the question can be proven.
+Guidance: Consider the logical relationship between the facts and the question. Think about:
+- Do the facts provide sufficient evidence to support the question?
+- Do the facts contradict or refute the question?
+- Are the facts insufficient or ambiguous to make a clear determination?
+Options:
+1. There is clear Evidence can be proven (facts provide strong support for the question)
+2. There is clear Evidence can be disproven (facts clearly contradict the question)
+3. There is clear Evidence cannot be determined (facts are insufficient, ambiguous, or inconclusive)
+Note: The hint above is a general guidance, but you should think independently and critically. Consider all possible interpretations and edge cases. Please respond with only the option number (1, 2, or 3)."""
+        else:
+            # Choice格式：使用question和options字段
+            question = element['question']
+            options = element['options']
+            passage = element.get('passage_text', '')
+            
+            # 构建选项文本
+            options_text = "\n".join(options)
+            
+            # 构建Facts部分
+            facts_part = ""
+            if passage and passage.strip():
+                facts_part = f"Facts: {passage}\n"
+            
+            # Choice格式的充分提示
+            prompt = f"""Question: {question}
 {facts_part}Task: Based on the given information, determine which option(s) are correct for the question.
 Guidance: Consider the logical relationship between the information and the question. Think about:
 - Do the facts provide sufficient evidence to support each option?
@@ -53,22 +78,45 @@ Answer:"""
         return prompt
     
     def build_insufficient_prompt(self, element: Dict[str, Any]) -> str:
-        """构建不充分提示的Choice prompt"""
+        """构建不充分提示的Choice prompt（支持Choice和TFU格式）"""
         
-        question = element['question']
-        options = element['options']
-        passage = element.get('passage_text', '')
-        
-        # 构建选项文本
-        options_text = "\n".join(options)
-        
-        # 构建Facts部分（对应TFU的Facts）
-        facts_part = ""
-        if passage and passage.strip():
-            facts_part = f"Facts: {passage}\n"
-        
-        # 不充分提示（去掉多选题说明，只保留单选题和全部错误两种情况）
-        prompt = f"""Question: {question}
+        # 检测数据格式并获取相应字段
+        if 'facts' in element and 'conclusion' in element:
+            # TFU格式：使用Conclusion和Facts字段
+            question = element['conclusion']
+            facts = element['facts']
+            options = element['options']
+            
+            # 构建选项文本
+            options_text = "\n".join(options)
+            
+            # TFU格式的不充分提示（对应原始TFU实验）
+            prompt = f"""Question: {question}
+Facts: {facts}
+Task: Based on the given facts, determine whether the question can be proven.
+Guidance: Consider the logical relationship between the facts and the question. Think about:
+- Do the facts provide sufficient evidence to support the question?
+- Do the facts contradict or refute the question?
+Options:
+1. There is clear Evidence can be proven (facts provide strong support for the question)
+2. There is clear Evidence can be disproven (facts clearly contradict the question)
+Note: The hint above is a general guidance, but you should think independently and critically. Consider all possible interpretations and edge cases. Please respond with the option number (1 or 2)."""
+        else:
+            # Choice格式：使用question和options字段
+            question = element['question']
+            options = element['options']
+            passage = element.get('passage_text', '')
+            
+            # 构建选项文本
+            options_text = "\n".join(options)
+            
+            # 构建Facts部分
+            facts_part = ""
+            if passage and passage.strip():
+                facts_part = f"Facts: {passage}\n"
+            
+            # Choice格式的不充分提示
+            prompt = f"""Question: {question}
 {facts_part}Task: Based on the given information, determine which option(s) are correct for the question.
 Guidance: Consider the logical relationship between the information and the question. Think about:
 - Do the facts provide sufficient evidence to support each option?

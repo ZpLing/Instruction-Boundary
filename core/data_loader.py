@@ -110,17 +110,8 @@ class ChoiceDataLoader:
     
     def convert_tfu_to_choice_format(self, tfu_element: Dict[str, Any]) -> Dict[str, Any]:
         """将TFU格式转换为Choice格式"""
-        # 从Facts中提取选项
-        facts = tfu_element.get("Facts", "")
-        options = []
-        
-        # 解析选项（格式：0. 选项内容）
-        import re
-        option_pattern = r'(\d+)\.\s*(.+?)(?=\n\d+\.|$)'
-        matches = re.findall(option_pattern, facts, re.DOTALL)
-        
-        for num, content in matches:
-            options.append(f"{num}. {content.strip()}")
+        # TFU格式已经包含options字段，直接使用
+        options = tfu_element.get("options", [])
         
         # 构建Choice格式
         choice_element = {
@@ -132,7 +123,10 @@ class ChoiceDataLoader:
             "original_id": tfu_element.get("original_id", ""),
             "num_options": len(options),
             "num_correct": len(tfu_element.get("correct_answers", [])),
-            "proof_label": tfu_element.get("proof_label", "")
+            "proof_label": tfu_element.get("proof_label", ""),
+            # 保留TFU原始字段用于prompt构建
+            "facts": tfu_element.get("Facts", ""),
+            "conclusion": tfu_element.get("Conclusion", "")
         }
         
         return choice_element
