@@ -42,24 +42,34 @@ class ChoiceDataLoader:
         """获取所有数据集文件"""
         dataset_files = []
         
-        # 检查当前目录和toolkit目录
-        possible_paths = [
+        # 检查Choice格式数据集
+        choice_paths = [
             'mixed_450_qa_dataset.json',
             './mixed_450_qa_dataset.json',
             'choice_toolkit/mixed_450_qa_dataset.json'
         ]
         
-        for path in possible_paths:
+        for path in choice_paths:
             if os.path.exists(path):
-                dataset_files = [path]
-                print(f"✅ 找到450个样本的选择题数据集: {path}")
+                dataset_files.append(path)
+                print(f"✅ 找到Choice格式数据集: {path}")
                 break
         
-        if not dataset_files and os.path.exists('choice_tfu_format_dataset.json'):
-            dataset_files = ['choice_tfu_format_dataset.json']
-            print(f"✅ 找到TFU格式的450个样本数据集: choice_tfu_format_dataset.json")
-        elif not dataset_files:
-            print("❌ 未找到450个样本的数据集文件")
+        # 检查TFU格式数据集
+        tfu_paths = [
+            'choice_tfu_format_dataset.json',
+            './choice_tfu_format_dataset.json',
+            '../Choices/choice_tfu_format_dataset.json'
+        ]
+        
+        for path in tfu_paths:
+            if os.path.exists(path):
+                dataset_files.append(path)
+                print(f"✅ 找到TFU格式数据集: {path}")
+                break
+        
+        if not dataset_files:
+            print("❌ 未找到任何数据集文件")
         
         return dataset_files
     
@@ -78,9 +88,62 @@ class ChoiceDataLoader:
         
         return expected_types
     
+    def detect_dataset_format(self, dataset_file: str) -> str:
+        """检测数据集格式"""
+        with open(dataset_file, "r") as file:
+            raw_data = json.load(file)
+        
+        if not raw_data:
+            return "unknown"
+        
+        # 检查第一个样本的字段
+        first_element = raw_data[0]
+        
+        # TFU格式特征：有Conclusion和Facts字段
+        if "Conclusion" in first_element and "Facts" in first_element:
+            return "tfu"
+        # Choice格式特征：有question和options字段
+        elif "question" in first_element and "options" in first_element:
+            return "choice"
+        else:
+            return "unknown"
+    
+    def convert_tfu_to_choice_format(self, tfu_element: Dict[str, Any]) -> Dict[str, Any]:
+        """将TFU格式转换为Choice格式"""
+        # 从Facts中提取选项
+        facts = tfu_element.get("Facts", "")
+        options = []
+        
+        # 解析选项（格式：0. 选项内容）
+        import re
+        option_pattern = r'(\d+)\.\s*(.+?)(?=\n\d+\.|$)'
+        matches = re.findall(option_pattern, facts, re.DOTALL)
+        
+        for num, content in matches:
+            options.append(f"{num}. {content.strip()}")
+        
+        # 构建Choice格式
+        choice_element = {
+            "question": tfu_element.get("Conclusion", ""),
+            "options": options,
+            "correct_answers": tfu_element.get("correct_answers", []),
+            "question_type": tfu_element.get("question_type", "single_choice"),
+            "dataset_source": tfu_element.get("dataset_source", "unknown"),
+            "original_id": tfu_element.get("original_id", ""),
+            "num_options": len(options),
+            "num_correct": len(tfu_element.get("correct_answers", [])),
+            "proof_label": tfu_element.get("proof_label", "")
+        }
+        
+        return choice_element
+    
     def load_and_prepare_dataset(self, dataset_file: str, config: Dict[str, Any]) -> Tuple[List[Dict], List[str], str]:
-        """加载和准备单个Choice数据集"""
+        """加载和准备数据集（支持Choice和TFU格式）"""
         print(f"\n📁 加载数据集: {dataset_file}")
+        
+        # 检测数据集格式
+        dataset_format = self.detect_dataset_format(dataset_file)
+        print(f"检测到数据集格式: {dataset_format}")
         
         # 获取数据集配置
         dataset_name = dataset_file.replace('.json', '')
@@ -91,11 +154,21 @@ class ChoiceDataLoader:
         with open(dataset_file, "r") as file:
             raw_data = json.load(file)
         
-        # 过滤有效样本
+        # 根据格式处理数据
         dataset = []
         for element in raw_data:
-            if validate_choice_element(element):
-                dataset.append(element)
+            if dataset_format == "tfu":
+                # 转换TFU格式为Choice格式
+                choice_element = self.convert_tfu_to_choice_format(element)
+                if validate_choice_element(choice_element):
+                    dataset.append(choice_element)
+            elif dataset_format == "choice":
+                # 直接使用Choice格式
+                if validate_choice_element(element):
+                    dataset.append(element)
+            else:
+                print(f"⚠️ 未知数据集格式: {dataset_format}")
+                continue
         
         # 验证并标准化题目类型
         question_types = dataset_config.get("question_types", ["single_choice", "multiple_choice", "no_correct_answer"])
@@ -103,6 +176,7 @@ class ChoiceDataLoader:
         
         print(f"有效样本数: {len(dataset)}")
         print(f"最终使用的题目类型: {question_types}")
+        print(f"数据集格式: {dataset_format}")
         
         return dataset, question_types, dataset_name
     

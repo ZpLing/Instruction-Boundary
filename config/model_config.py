@@ -5,6 +5,8 @@ Choice Toolkit - 模型配置
 统一管理所有模型配置和API设置
 """
 
+import os
+
 # 支持的模型列表
 SUPPORTED_MODELS = [
     "gpt-3.5-turbo",

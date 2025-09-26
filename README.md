@@ -54,9 +54,25 @@ choice_toolkit/
 ├── experiments/               # Individual experiment implementations
 ├── results/                   # Output directories
 ├── main.py                    # Main execution script
-├── mixed_450_qa_dataset.json  # Main dataset (450 samples)
+├── mixed_450_qa_dataset.json  # Choice format dataset (450 samples)
+├── choice_tfu_format_dataset.json  # TFU format dataset (450 samples)
 └── requirements.txt           # Dependencies
 ```
+
+## 📊 Supported Dataset Formats
+
+The toolkit supports two dataset formats:
+
+### Choice Format
+- **File**: `mixed_450_qa_dataset.json`
+- **Fields**: `question`, `options`, `correct_answers`, `question_type`
+- **Description**: Standard multiple choice format
+
+### TFU Format  
+- **File**: `choice_tfu_format_dataset.json`
+- **Fields**: `Conclusion`, `Facts`, `correct_answers`, `question_type`
+- **Description**: TFU-style format with facts and conclusions
+- **Auto-conversion**: Automatically converted to Choice format internally
 
 ## 📊 Output Files
 
