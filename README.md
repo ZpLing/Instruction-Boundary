@@ -33,14 +33,6 @@ python main.py --experiment 1.1_2.1,2.3
 python main.py --model gpt-4o --experiment 1.1_2.1
 ```
 
-### 4. Generate Visualizations
-```bash
-# Generate 3D waterfall plots
-python 3D_line.py
-
-# Generate radar charts
-python Radar_Right.py
-```
 
 ## 🧪 Experimental Settings
 
@@ -63,8 +55,6 @@ choice_toolkit/
 ├── results/                   # Output directories
 ├── main.py                    # Main execution script
 ├── mixed_450_qa_dataset.json  # Main dataset (450 samples)
-├── 3D_line.py                # 3D visualization script
-├── Radar_Right.py             # Radar chart visualization
 └── requirements.txt           # Dependencies
 ```
 
