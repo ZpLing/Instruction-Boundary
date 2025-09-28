@@ -6,8 +6,8 @@ Choice实验2.3：模糊提示实验
 """
 
 from typing import Dict, Any, List
-from ..core.api_client import ChoiceAPIClient
-from ..core.evaluator import ChoiceEvaluator
+from core.api_client import ChoiceAPIClient
+from core.evaluator import ChoiceEvaluator
 
 class Experiment2_3:
     """实验2.3：模糊提示实验"""
@@ -74,3 +74,4 @@ Please respond with only the option number(s)."""
             "ambiguous_metrics": ambiguous_metrics,
             "ambiguous_files": ambiguous_files
         }
+
