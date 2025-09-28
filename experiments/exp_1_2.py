@@ -6,8 +6,8 @@ Choice实验1.2：少样本学习实验
 """
 
 from typing import Dict, Any, List
-from ..core.api_client import ChoiceAPIClient
-from ..core.evaluator import ChoiceEvaluator
+from core.api_client import ChoiceAPIClient
+from core.evaluator import ChoiceEvaluator
 
 class Experiment1_2:
     """实验1.2：少样本学习实验"""
@@ -201,3 +201,4 @@ Answer:"""
             "few_shot_files": few_shot_files,
             "analysis": analysis
         }
+

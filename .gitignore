@@ -1,56 +1,29 @@
-# Python
+# Python cache
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
 
-# API Keys and sensitive data
+# Environment variables
 .env
+.env.local
+
+# API Keys (never commit these!)
 *.key
-*api_key*
-*secret*
-*password*
+api_keys.txt
+config.ini
 
-# Virtual environments
-venv/
-env/
-ENV/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# API Keys
-.env
-*.key
-
-# Results (optional - uncomment if you don't want to track results)
-# results/
-# *.json
-# *.pdf
-# *.png
+# Experiment results
+results/
+experiment_data*/
 
 # Logs
 *.log
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# OS files
+.DS_Store
+Thumbs.db

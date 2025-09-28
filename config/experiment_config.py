@@ -124,3 +124,4 @@ def validate_experiment_sequence(experiment_ids: List[str]) -> bool:
             if dep not in experiment_ids or experiment_ids.index(dep) >= experiment_ids.index(exp_id):
                 return False
     return True
+

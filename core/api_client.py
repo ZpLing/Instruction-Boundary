@@ -134,3 +134,4 @@ Please respond with only the corresponding label, no other explanation."""
         results.sort(key=lambda x: x.get('index', 0))
         
         return results
+

@@ -252,3 +252,4 @@ class ChoiceEvaluator:
             print(f"\n   {q_type}:")
             for output_label, stats in distribution.items():
                 print(f"     {output_label:>10}: {stats['count']:>3}次 ({stats['percentage']:>5.1f}%)")
+

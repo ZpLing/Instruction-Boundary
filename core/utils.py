@@ -207,3 +207,4 @@ def print_experiment_summary(metrics: Dict[str, Any], experiment_type: str):
     print(f"   Jump率1: {metrics['jump_rate_no_answer']:.3f} ({metrics['jump_correct_no_answer']}/{metrics['jump_total_no_answer']}) [无答案题判断对了]")
     print(f"   Jump率2: {metrics['jump_rate_with_answer']:.3f} ({metrics['jump_correct_with_answer']}/{metrics['jump_total_with_answer']}) [多选题判断对了]")
     print(f"   标签提取方法: {metrics['extraction_method_stats']}")
+
