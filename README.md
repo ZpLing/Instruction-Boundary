@@ -1,20 +1,41 @@
-# Choice Experiment Toolkit
+# 🎯 Choice Experiment Toolkit
 
-A comprehensive toolkit for evaluating LLM instruction following capabilities through multiple choice experiments. This toolkit implements 6 experimental settings that correspond to the original TFU (Truth Following Under Uncertainty) experiments, adapted for multiple choice question formats.
+<div align="center">
+
+**A comprehensive toolkit for evaluating LLM instruction following capabilities through multiple choice experiments**
+
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o-green.svg)](https://openai.com/)
+
+</div>
+
+This toolkit implements **6 experimental settings** that systematically evaluate how Large Language Models (LLMs) handle instruction following in multiple choice scenarios. The experiments are adapted from the original TFU (Truth Following Under Uncertainty) framework, providing a standardized approach to assess model behavior across different prompt strategies and cognitive biases.
+
+## ✨ Key Features
+
+- 🔬 **6 Comprehensive Experiments**: Systematic evaluation of instruction following capabilities
+- 🎨 **Dual Format Support**: Automatic detection and conversion between Choice and TFU formats
+- 🤖 **Multi-Model Support**: Compatible with GPT-4o, Claude, Llama, and Gemini
+- 📊 **Rich Evaluation Metrics**: Follow rate, Jump rate, and TFU-style analysis
+- 🚀 **Easy-to-Use**: Command-line interface and Python API
+- 📈 **Detailed Outputs**: Comprehensive results with statistical analysis
 
 ## 🚀 Quick Start
 
-### 1. Installation
+### 📦 Installation
+
 ```bash
 # Clone the repository
 git clone https://github.com/ZpLing/Instruction-Boundary.git
-cd Instruction-Boundary
+cd Instruction-Boundary/choice_toolkit
 
 # Install dependencies
 pip install -r requirements.txt
 ```
 
-### 2. Setup API Key
+### 🔑 API Configuration
+
 ```bash
 # Set your OpenAI API key
 export OPENAI_API_KEY="your-api-key-here"
@@ -23,172 +44,303 @@ export OPENAI_API_KEY="your-api-key-here"
 export OPENAI_BASE_URL="https://api.openai.com/v1"
 ```
 
-**Important**: Never commit your actual API key to the repository. Use environment variables instead.
+> ⚠️ **Security Note**: Never commit your actual API key to the repository. Always use environment variables.
 
-### 3. Run Experiments
+### 🎮 Running Experiments
+
 ```bash
-# List available experiments
-python main.py --list-experiments
+# 📋 List all available experiments
+python main.py --list
 
-# Run all experiments
+# 🚀 Run all experiments
 python main.py --all
 
-# Run specific experiments
+# 🎯 Run specific experiments
 python main.py --experiment 1.1_2.1,2.3
 
-# Run with specific model
+# 🤖 Run with specific model
 python main.py --model gpt-4o --experiment 1.1_2.1
+
+# 📊 Quick test (recommended for first run)
+python test_imports.py
+```
+
+### ⚡ 30-Second Demo
+
+```bash
+# Quick start with interactive menu
+python quick_start.py
 ```
 
 
 ## 🧪 Experimental Settings
 
-The toolkit implements 6 experimental settings that correspond to the original TFU experiments:
+The toolkit implements **6 comprehensive experimental settings** that systematically evaluate different aspects of LLM instruction following behavior:
 
-| Setting | Description | Original TFU Experiment |
-|---------|-------------|------------------------|
-| **1.1_2.1** | Sufficient vs Insufficient Prompts | exp_TFU_1.1_2.1.py |
-| **1.2** | Few-shot Learning | exp_TFU_1.2.py |
-| **2.3** | Ambiguous Prompts | exp_TFU_2.3.py |
-| **2.5** | LLM Polished Prompts | exp_TFU_2.5.py |
-| **2.6** | Multi-turn Conversation | exp_TFU_2.6.py |
-| **2.8** | Bandwagon Effect | exp_TFU_2.8.py |
+<div align="center">
 
-### Experimental Details
+| 🎯 Experiment | 📝 Description | 🔬 Focus Area | 📊 Original TFU |
+|---------------|----------------|---------------|-----------------|
+| **1.1_2.1** | Sufficient vs Insufficient Prompts | Information Completeness | exp_TFU_1.1_2.1.py |
+| **1.2** | Few-shot Learning | Learning from Examples | exp_TFU_1.2.py |
+| **2.3** | Ambiguous Prompts | Uncertainty Handling | exp_TFU_2.3.py |
+| **2.5** | LLM Polished Prompts | Prompt Optimization | exp_TFU_2.5.py |
+| **2.6** | Multi-turn Conversation | Self-Reflection | exp_TFU_2.6.py |
+| **2.8** | Bandwagon Effect | Social Bias | exp_TFU_2.8.py |
 
-**1.1_2.1 - Sufficient vs Insufficient Prompts**
-- Tests model behavior with complete vs incomplete information
-- Sufficient: Provides all necessary context and options
-- Insufficient: Removes critical information or options
+</div>
 
-**1.2 - Few-shot Learning**
-- Evaluates model's ability to learn from examples
-- Uses 2-3 example demonstrations before the target question
+### 🔬 Detailed Experimental Descriptions
 
-**2.3 - Ambiguous Prompts**
-- Tests model behavior with unclear or ambiguous instructions
-- Measures how models handle uncertainty in prompts
+#### 🎯 **1.1_2.1 - Sufficient vs Insufficient Prompts**
+- **Objective**: Evaluate how information completeness affects model performance
+- **Method**: Compare responses with full context vs. missing critical information
+- **Metrics**: Accuracy difference, confidence levels, error patterns
+- **Insight**: Tests model's dependency on complete information
 
-**2.5 - LLM Polished Prompts**
-- Uses LLM-generated refined prompts based on insufficient prompts
-- Tests if model-generated prompts improve performance
+#### 🎓 **1.2 - Few-shot Learning**
+- **Objective**: Assess model's ability to learn from examples
+- **Method**: Provide 1-3 example demonstrations before target questions
+- **Metrics**: Learning curve, example utilization, generalization
+- **Insight**: Evaluates in-context learning capabilities
 
-**2.6 - Multi-turn Conversation**
-- Implements two-round conversations with self-reflection
-- First round: Initial response, Second round: Reflection and refinement
+#### ❓ **2.3 - Ambiguous Prompts**
+- **Objective**: Test model behavior with unclear instructions
+- **Method**: Use minimal, vague prompts with reduced guidance
+- **Metrics**: Uncertainty handling, interpretation consistency
+- **Insight**: Measures robustness to ambiguous inputs
 
-**2.8 - Bandwagon Effect**
-- Tests conformity behavior with misleading social cues
-- Includes hints about "typical" incorrect answers
+#### ✨ **2.5 - LLM Polished Prompts**
+- **Objective**: Test if model-generated prompts improve performance
+- **Method**: Use LLM-refined versions of insufficient prompts
+- **Metrics**: Prompt effectiveness, self-improvement capability
+- **Insight**: Evaluates model's prompt optimization skills
 
-## 📁 Structure
+#### 🔄 **2.6 - Multi-turn Conversation**
+- **Objective**: Assess self-reflection and iterative improvement
+- **Method**: Two-round conversations with reflection prompts
+- **Metrics**: Improvement rate, consistency, self-correction
+- **Insight**: Tests reasoning and self-correction abilities
+
+#### 👥 **2.8 - Bandwagon Effect**
+- **Objective**: Evaluate susceptibility to social bias
+- **Method**: Include misleading hints about "popular" answers
+- **Metrics**: Conformity rate, bias resistance, critical thinking
+- **Insight**: Tests independence from social influence
+
+## 📁 Project Structure
 
 ```
 choice_toolkit/
-├── config/                    # Configuration files
-├── core/                      # Core functionality
-├── experiments/               # Individual experiment implementations
-├── results/                   # Output directories
-├── main.py                    # Main execution script
-├── mixed_450_qa_dataset.json  # Choice format dataset (450 samples)
-├── choice_tfu_format_dataset.json  # TFU format dataset (450 samples)
-└── requirements.txt           # Dependencies
+├── 📁 config/                          # Configuration files
+│   ├── model_config.py                 # Model and API settings
+│   └── experiment_config.py            # Experiment parameters
+├── 📁 core/                            # Core functionality
+│   ├── api_client.py                   # API communication
+│   ├── data_loader.py                  # Dataset loading and processing
+│   ├── evaluator.py                    # Evaluation metrics
+│   └── utils.py                        # Utility functions
+├── 📁 experiments/                     # Individual experiment implementations
+│   ├── exp_1_1_2_1.py                 # Sufficient vs Insufficient prompts
+│   ├── exp_1_2.py                      # Few-shot learning
+│   ├── exp_2_3.py                      # Ambiguous prompts
+│   ├── exp_2_5.py                      # LLM polished prompts
+│   ├── exp_2_6.py                      # Multi-turn conversation
+│   └── exp_2_8.py                      # Bandwagon effect
+├── 📁 results/                         # Output directories (auto-created)
+├── 📄 main.py                          # Main execution script
+├── 📄 quick_start.py                   # Interactive quick start
+├── 📄 example_usage.py                 # Usage examples
+├── 📄 test_imports.py                  # Import validation
+├── 📄 test_toolkit.py                  # Comprehensive tests
+├── 📊 mixed_450_qa_dataset.json        # Choice format dataset (450 samples)
+├── 📊 choice_tfu_format_dataset.json   # TFU format dataset (450 samples)
+├── ⚙️ choice_config.json               # Dataset configuration
+├── 📋 requirements.txt                 # Python dependencies
+└── 📖 README.md                        # This file
 ```
 
-## 📊 Supported Dataset Formats
+## 📊 Dataset Formats
 
-The toolkit supports two dataset formats with automatic format detection and conversion:
+The toolkit supports **dual dataset formats** with automatic detection and seamless conversion:
 
-### Choice Format
+### 🎯 **Choice Format** (Standard Multiple Choice)
+```json
+{
+  "question": "What is the capital of France?",
+  "options": ["London", "Berlin", "Paris", "Madrid"],
+  "correct_answers": [2],
+  "question_type": "single_choice"
+}
+```
 - **File**: `mixed_450_qa_dataset.json`
-- **Fields**: `question`, `options`, `correct_answers`, `question_type`
-- **Description**: Standard multiple choice format
-- **Prompt Style**: Direct question-answer format with option selection
+- **Style**: Direct question-answer with option selection
+- **Use Case**: Standard multiple choice evaluation
 
-### TFU Format  
+### 🔍 **TFU Format** (Evidence-Based Reasoning)
+```json
+{
+  "Conclusion": "Paris is the capital of France",
+  "Facts": "Paris is located in northern France and serves as the political center...",
+  "correct_answers": [0],
+  "question_type": "single_choice"
+}
+```
 - **File**: `choice_tfu_format_dataset.json`
-- **Fields**: `Conclusion`, `Facts`, `correct_answers`, `question_type`
-- **Description**: TFU-style format with facts and conclusions
-- **Prompt Style**: Evidence-based reasoning format (proven/disproven/undetermined)
-- **Auto-conversion**: Automatically converted to Choice format internally
+- **Style**: Evidence-based reasoning (proven/disproven/undetermined)
+- **Use Case**: TFU-style cognitive evaluation
 
-### Format Detection
-The toolkit automatically detects dataset format based on field presence:
-- **Choice format**: Contains `question` and `options` fields
-- **TFU format**: Contains `Conclusion` and `Facts` fields
+### 🔄 **Automatic Format Detection**
+The toolkit intelligently detects format based on field presence:
+- **Choice format**: `question` + `options` fields
+- **TFU format**: `Conclusion` + `Facts` fields
+- **Auto-conversion**: TFU format internally converted to Choice format
 
-### Prompt Adaptation
-- **Choice format**: Uses standard multiple choice prompts
-- **TFU format**: Uses evidence-based reasoning prompts (corresponds to original TFU experiments)
+## 📈 Output & Results
 
-## 📊 Output Files
-
-Results are saved in `results/` directory with the following structure:
+Results are automatically saved in the `results/` directory with comprehensive analysis:
 
 ```
 results/
-├── experiment_data_choice_1_1_2_1/
-│   ├── {model}_{dataset}_choice_sufficient_evaluation.json
-│   ├── {model}_{dataset}_choice_insufficient_evaluation.json
-│   └── {model}_{dataset}_choice_sufficient_vs_insufficient_tfu_comparison.json
-├── experiment_data_choice_1_2/
-│   └── {model}_{dataset}_choice_few_shot_evaluation.json
-└── ...
+├── 📁 experiment_data_choice_1_2/           # Experiment 1.1_2.1 results
+│   ├── 📄 gpt-4o_mixed_450_qa_sufficient_evaluation.json
+│   ├── 📄 gpt-4o_mixed_450_qa_insufficient_evaluation.json
+│   └── 📊 gpt-4o_mixed_450_qa_sufficient_vs_insufficient_comparison.json
+├── 📁 experiment_data_choice_2_3/           # Experiment 2.3 results
+│   └── 📄 gpt-4o_mixed_450_qa_ambiguous_evaluation.json
+└── 📁 experiment_data_choice_2_6/           # Experiment 2.6 results
+    └── 📄 gpt-4o_mixed_450_qa_multi_turn_evaluation.json
 ```
 
-### File Types
-- **Evaluation Results**: Detailed evaluation results for each experiment
-- **Accuracy Analysis**: Accuracy metrics and statistics
-- **Comparison Summaries**: Comparative analysis between different prompt types
-- **TFU-style Metrics**: Follow rate, Jump rate, and other TFU-style metrics
+### 📊 **Output File Types**
 
-## 🔧 Usage Examples
+| 📄 File Type | 📝 Description | 🔍 Content |
+|--------------|----------------|------------|
+| **Evaluation Results** | Detailed responses and analysis | Model outputs, extracted labels, judge evaluations |
+| **Accuracy Analysis** | Performance metrics | Follow rate, Jump rate, overall accuracy |
+| **Comparison Summaries** | Cross-experiment analysis | Statistical comparisons, performance differences |
+| **TFU-style Metrics** | Specialized evaluation | Cognitive bias analysis, reasoning patterns |
 
-### Basic Usage
+### 📈 **Key Metrics**
+
+- **🎯 Follow Rate**: Percentage of correct single-choice answers
+- **🚀 Jump Rate (No Answer)**: Accuracy on "no correct answer" questions  
+- **🚀 Jump Rate (Multiple)**: Accuracy on multiple-choice questions
+- **📊 Overall Accuracy**: Total correctness across all question types
+- **🔍 Extraction Method Stats**: Keyword vs LLM judge usage
+- **📋 Output Distribution**: Response pattern analysis
+
+## 💻 Usage Examples
+
+### 🚀 **Basic Python Usage**
+
 ```python
+import asyncio
 from main import ChoiceToolkit
 
-# Initialize toolkit
-toolkit = ChoiceToolkit(model_name="gpt-4o")
+async def basic_experiment():
+    # Initialize toolkit with specific model
+    toolkit = ChoiceToolkit(model_name="gpt-4o")
+    
+    # Run single experiment
+    results = await toolkit.run_single_experiment("1.1_2.1", dataset, "mixed_450_qa")
+    
+    # Print results
+    print(f"Experiment completed with {len(results)} samples")
 
-# Run specific experiment
-results = await toolkit.run_single_experiment("1.1_2.1", dataset, "mixed_450_qa")
+# Run the experiment
+asyncio.run(basic_experiment())
 ```
 
-### Advanced Usage
+### 🔬 **Advanced Multi-Experiment Setup**
+
 ```python
-# Run multiple experiments
-experiment_ids = ["1.1_2.1", "2.3", "2.6"]
-results = await toolkit.run_experiments(experiment_ids)
+async def comprehensive_evaluation():
+    # Initialize toolkit
+    toolkit = ChoiceToolkit(model_name="gpt-4o")
+    
+    # Define experiment suite
+    experiments = ["1.1_2.1", "2.3", "2.6", "2.8"]
+    
+    # Run multiple experiments
+    results = await toolkit.run_experiments(experiments)
+    
+    # Analyze results
+    for exp_id, result in results.items():
+        print(f"Experiment {exp_id}: {result['overall_accuracy']:.3f} accuracy")
 
-# Run with different models
-models = ["gpt-4o", "claude-3-7-sonnet-20250219", "llama-3.1-8b-instruct"]
-for model in models:
-    toolkit = ChoiceToolkit(model_name=model)
-    await toolkit.run_experiments()
+# Execute comprehensive evaluation
+asyncio.run(comprehensive_evaluation())
 ```
 
-### Command Line Usage
+### 🤖 **Multi-Model Comparison**
+
+```python
+async def model_comparison():
+    models = ["gpt-4o", "claude-3-7-sonnet-20250219", "llama-3.1-8b-instruct"]
+    
+    for model in models:
+        print(f"\n🧪 Testing {model}...")
+        toolkit = ChoiceToolkit(model_name=model)
+        results = await toolkit.run_experiments(["1.1_2.1"])
+        print(f"✅ {model} completed")
+
+# Run model comparison
+asyncio.run(model_comparison())
+```
+
+### 📱 **Command Line Interface**
+
 ```bash
-# Run all experiments with specific model
-python main.py --model gpt-4o --all
+# 🎯 Run specific experiments
+python main.py --experiment 1.1_2.1,2.3,2.6 --model gpt-4o
 
-# Run specific experiments
-python main.py --experiment 1.1_2.1,2.3,2.6
+# 🚀 Run all experiments
+python main.py --all --model claude-3-7-sonnet-20250219
 
-# List available experiments
-python main.py --list-experiments
+# 📋 List available experiments
+python main.py --list
+
+# ⚡ Interactive quick start
+python quick_start.py
+
+# 🧪 Run test suite
+python test_imports.py
 ```
 
-## 🧪 Supported Models
+### 📊 **Custom Dataset Usage**
 
-- **GPT-4o**: OpenAI's latest model
-- **GPT-3.5-turbo**: OpenAI's efficient model
-- **Claude-3-7-sonnet-20250219**: Anthropic's advanced model
-- **Llama-3.1-8b-instruct**: Meta's open-source model
-- **Gemini-2.0-flash**: Google's latest model
+```python
+# Load custom dataset
+from core.data_loader import ChoiceDataLoader
 
-## 📚 Citation
+data_loader = ChoiceDataLoader(config)
+custom_dataset, types, name = data_loader.load_and_prepare_dataset("your_dataset.json")
+
+# Run experiments on custom data
+toolkit = ChoiceToolkit()
+results = await toolkit.run_single_experiment("2.3", custom_dataset, name)
+```
+
+## 🤖 Supported Models
+
+The toolkit supports a wide range of state-of-the-art language models:
+
+<div align="center">
+
+| 🏢 Provider | 🤖 Model | 🎯 Recommended Use | ⚡ Speed |
+|-------------|----------|-------------------|----------|
+| **OpenAI** | GPT-4o | Primary evaluation | Fast |
+| **OpenAI** | GPT-3.5-turbo | Cost-effective testing | Very Fast |
+| **Anthropic** | Claude-3-7-sonnet-20250219 | Advanced reasoning | Fast |
+| **Meta** | Llama-3.1-8b-instruct | Open-source alternative | Medium |
+| **Google** | Gemini-2.0-flash | Latest capabilities | Fast |
+
+</div>
+
+> 💡 **Tip**: Start with GPT-4o for best results, then use other models for comparison studies.
+
+## 📚 Citation & Research
 
 If you use this toolkit in your research, please cite:
 
@@ -197,14 +349,55 @@ If you use this toolkit in your research, please cite:
   title={Instruction Boundary: A Comprehensive Toolkit for LLM Instruction Following Evaluation},
   author={[Author Names]},
   journal={arXiv preprint arXiv:2509.20278},
-  year={2025}
+  year={2025},
+  url={https://github.com/ZpLing/Instruction-Boundary}
 }
 ```
 
+### 🔬 **Research Applications**
+- **Cognitive Science**: Understanding LLM reasoning patterns
+- **AI Safety**: Evaluating instruction following robustness
+- **Prompt Engineering**: Optimizing prompt strategies
+- **Model Comparison**: Benchmarking different LLMs
+- **Bias Detection**: Identifying cognitive biases in AI systems
+
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit issues, feature requests, or pull requests.
+We welcome contributions! Here's how you can help:
+
+### 🐛 **Bug Reports**
+- Use GitHub Issues to report bugs
+- Include reproduction steps and environment details
+
+### 🚀 **Feature Requests**
+- Suggest new experimental settings
+- Propose additional evaluation metrics
+- Request new model support
+
+### 💻 **Code Contributions**
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### 📖 **Documentation**
+- Improve README sections
+- Add code examples
+- Translate documentation
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+
+**🎯 Choice Experiment Toolkit** - *Evaluating LLM Instruction Following Capabilities*
+
+[⭐ Star this repo](https://github.com/ZpLing/Instruction-Boundary) • [🐛 Report Bug](https://github.com/ZpLing/Instruction-Boundary/issues) • [💡 Request Feature](https://github.com/ZpLing/Instruction-Boundary/issues)
+
+Made with ❤️ for the AI research community
+
+</div>
