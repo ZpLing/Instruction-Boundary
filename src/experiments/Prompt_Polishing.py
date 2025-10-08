@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Choice实验2.5：LLM优化提示实验
-对应TFU的exp_TFU_2.5.py
+Choice Experiment Prompt_Polishing
 """
 
 from typing import Dict, Any, List
 from core.api_client import ChoiceAPIClient
 from core.evaluator import ChoiceEvaluator
 
-class Experiment2_5:
-    """实验2.5：LLM优化提示实验"""
+class Experiment_Prompt_Polishing:
+    """Experiment Prompt Polishing"""
     
     def __init__(self, config: Dict[str, Any]):
         self.config = config
@@ -18,21 +17,21 @@ class Experiment2_5:
         self.evaluator = ChoiceEvaluator()
     
     def build_llm_polished_prompt(self, element: Dict[str, Any]) -> str:
-        """构建LLM润色后的insufficient Choice prompt（基于insufficient提示进行专业润色）"""
+        """Build LLM-polished insufficient Choice prompt (professionally polished based on insufficient prompt)"""
         
         question = element['question']
         options = element['options']
         passage = element.get('passage_text', '')
         
-        # 构建选项文本
+        # Build options text
         options_text = "\n".join(options)
         
-        # 构建Facts部分
+        # Build Facts section
         facts_part = ""
         if passage and passage.strip():
             facts_part = f"Facts: {passage}\n"
         
-        # LLM润色后的insufficient提示（基于insufficient但进行专业润色）
+        # LLM-polished insufficient prompt (professionally polished based on insufficient format)
         prompt = f"""Question: {question}
 {facts_part}Task: Based on the provided information, determine which option is correct for the question.
 
@@ -57,32 +56,24 @@ Answer:"""
         return prompt
     
     async def run_llm_polished_experiment(self, dataset: List[Dict]) -> List[Dict]:
-        """运行LLM优化提示实验"""
-        print(f"\n🚀 运行Choice LLM优化提示实验 - 模型: {self.config['test_model']}")
-        print(f"   数据集大小: {len(dataset)}")
-        print(f"   Judge模型: {self.config['judge_model']}")
-        print(f"   提示描述: LLM优化提示 - 使用优化的提示结构")
+        """Run LLM-optimized prompt experiment"""
+        print(f"\n🚀 Running Choice LLM-Optimized Prompt Experiment - Model: {self.config['test_model']}")
+        print(f"   Dataset size: {len(dataset)}")
+        print(f"   Judge model: {self.config['judge_model']}")
+        print(f"   Prompt description: LLM-optimized prompt - Using optimized prompt structure")
         
         return await self.api_client.process_dataset(dataset, self.build_llm_polished_prompt, "llm_polished")
     
     async def run_experiment(self, dataset: List[Dict], model_name: str, dataset_name: str, 
                            output_folder: str) -> Dict[str, Any]:
-        """运行完整实验"""
-        
-        print("=" * 70)
-        print("Choice实验2.5：LLM优化提示实验")
-        print("实验序号: 2.5 | 实验类型: LLM优化提示实验")
-        print("基于choice_exp_1.1_2.1.py的统一标准")
-        print("测试LLM优化的提示对选择题性能的影响")
-        print("=" * 70)
-        
-        # 运行LLM优化提示实验
+        """Run complete experiment"""
+        # Run LLM-optimized prompt experiment
         llm_polished_results = await self.run_llm_polished_experiment(dataset)
         llm_polished_metrics = self.evaluator.calculate_choice_metrics_with_tfu_style(llm_polished_results)
         llm_polished_files = self.evaluator.save_experiment_results(
             llm_polished_results, llm_polished_metrics, model_name, dataset_name, "llm_polished", output_folder
         )
-        self.evaluator.print_experiment_summary(llm_polished_metrics, "LLM优化提示")
+        self.evaluator.print_experiment_summary(llm_polished_metrics, "LLM-Optimized Prompt")
         
         return {
             "llm_polished_results": llm_polished_results,

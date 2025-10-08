@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Choice实验2.6：多轮对话反思实验
-对应TFU的exp_TFU_2.6.py
+Choice Experiment Multi-turn Dialogue
 """
 
 import asyncio
@@ -10,8 +9,8 @@ from typing import Dict, Any, List
 from core.api_client import ChoiceAPIClient
 from core.evaluator import ChoiceEvaluator
 
-class Experiment2_6:
-    """实验2.6：多轮对话反思实验"""
+class Experiment_Multi_turn_Dialogue:
+    """Experiment Multi-turn Dialogue"""
     
     def __init__(self, config: Dict[str, Any]):
         self.config = config
@@ -19,21 +18,21 @@ class Experiment2_6:
         self.evaluator = ChoiceEvaluator()
     
     def build_first_round_prompt(self, element: Dict[str, Any]) -> str:
-        """构建第一轮对话的prompt"""
+        """Build first round dialogue prompt"""
         
         question = element['question']
         options = element['options']
         passage = element.get('passage_text', '')
         
-        # 构建选项文本
+        # Build options text
         options_text = "\n".join(options)
         
-        # 构建Facts部分
+        # Build Facts section
         facts_part = ""
         if passage and passage.strip():
             facts_part = f"Facts: {passage}\n"
         
-        # 第一轮对话提示
+        # First round dialogue prompt
         prompt = f"""Question: {question}
 {facts_part}Options:
 {options_text}
@@ -43,21 +42,21 @@ Please respond with only the option number(s)."""
         return prompt
     
     def build_reflection_prompt(self, element: Dict[str, Any], first_answer: str) -> str:
-        """构建第二轮反思prompt"""
+        """Build second round reflection prompt"""
         
         question = element['question']
         options = element['options']
         passage = element.get('passage_text', '')
         
-        # 构建选项文本
+        # Build options text
         options_text = "\n".join(options)
         
-        # 构建Facts部分
+        # Build Facts section
         facts_part = ""
         if passage and passage.strip():
             facts_part = f"Facts: {passage}\n"
         
-        # 第二轮：反思和改进
+        # Second round: Reflection and improvement
         prompt = f"""Question: {question}
 {facts_part}Your previous answer: {first_answer}
 
@@ -89,46 +88,46 @@ Final Answer:"""
         return prompt
     
     async def run_multi_turn_experiment(self, dataset: List[Dict]) -> List[Dict]:
-        """运行多轮对话实验"""
-        print(f"\n🚀 运行Choice多轮对话实验 - 模型: {self.config['test_model']}")
-        print(f"   数据集大小: {len(dataset)}")
-        print(f"   Judge模型: {self.config['judge_model']}")
-        print(f"   提示描述: 多轮对话反思 - 两轮对话反思模式")
+        """Run multi-turn dialogue experiment"""
+        print(f"\n🚀 Running Choice Multi-turn Dialogue Experiment - Model: {self.config['test_model']}")
+        print(f"   Dataset size: {len(dataset)}")
+        print(f"   Judge model: {self.config['judge_model']}")
+        print(f"   Prompt description: Multi-turn dialogue reflection - Two-round reflection mode")
         
-        # 创建任务
+        # Create tasks
         tasks = []
         for i, element in enumerate(dataset):
             task = self.process_multi_turn_element(element, i)
             tasks.append(task)
         
-        # 执行任务
+        # Execute tasks
         results = []
         for task in asyncio.as_completed(tasks):
             result = await task
-            results.append(task)
+            results.append(result)
         
-        # 按索引排序
+        # Sort by index
         results.sort(key=lambda x: x.get('index', 0))
         
         return results
     
     async def process_multi_turn_element(self, element: Dict[str, Any], index: int) -> Dict[str, Any]:
-        """处理多轮对话的单个元素"""
+        """Process single element with multi-turn dialogue"""
         
-        # 第一轮对话
+        # First round dialogue
         first_prompt = self.build_first_round_prompt(element)
         first_msg = [{"role": "user", "content": first_prompt}]
         first_answer = await self.api_client.call_openai(first_msg)
         
-        # 反思轮次
+        # Reflection round
         reflection_prompt = self.build_reflection_prompt(element, first_answer)
         reflection_msg = [{"role": "user", "content": reflection_prompt}]
         final_answer = await self.api_client.call_openai(reflection_msg)
         
-        # 使用混合策略提取标签
+        # Extract label using hybrid strategy
         extracted_label, extraction_method = await self.api_client.hybrid_extract_choice_label(final_answer)
         
-        # 使用改进的judging逻辑评估
+        # Evaluate using improved judging logic
         from core.utils import improved_choice_judge_logic
         judge_result = improved_choice_judge_logic(final_answer, element.get('correct_answers', []))
         
@@ -147,22 +146,14 @@ Final Answer:"""
     
     async def run_experiment(self, dataset: List[Dict], model_name: str, dataset_name: str, 
                            output_folder: str) -> Dict[str, Any]:
-        """运行完整实验"""
-        
-        print("=" * 70)
-        print("Choice实验2.6：多轮对话反思实验")
-        print("实验序号: 2.6 | 实验类型: 多轮对话反思实验")
-        print("基于choice_exp_1.1_2.1.py的统一标准")
-        print("测试多轮对话反思对选择题性能的影响")
-        print("=" * 70)
-        
-        # 运行多轮对话实验
+        """Run complete experiment"""
+        # Run multi-turn dialogue experiment
         multi_turn_results = await self.run_multi_turn_experiment(dataset)
         multi_turn_metrics = self.evaluator.calculate_choice_metrics_with_tfu_style(multi_turn_results)
         multi_turn_files = self.evaluator.save_experiment_results(
             multi_turn_results, multi_turn_metrics, model_name, dataset_name, "multi_turn", output_folder
         )
-        self.evaluator.print_experiment_summary(multi_turn_metrics, "多轮对话反思")
+        self.evaluator.print_experiment_summary(multi_turn_metrics, "Multi-turn Dialogue Reflection")
         
         return {
             "multi_turn_results": multi_turn_results,
