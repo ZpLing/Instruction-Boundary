@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Choice Toolkit - 工具函数
-通用的工具函数和验证器
+Choice Toolkit - Utility Functions
+Common utility functions and validators
 """
 
 import re
 from typing import Dict, Any, List, Optional
 
 def validate_choice_element(element: Dict[str, Any]) -> bool:
-    """验证Choice元素是否有效"""
+    """Validate if a Choice element is valid"""
     required_fields = ['question', 'options']
     return all(field in element for field in required_fields)
 
 def extract_choice_label_by_keywords(answer_text: str) -> Optional[str]:
-    """使用关键词匹配提取Choice标签"""
+    """Extract Choice label using keyword matching"""
     answer_lower = answer_text.lower().strip()
     
-    # 先检查多选答案模式（优先级更高）
+    # First check multiple-choice answer patterns (higher priority)
     multiple_patterns_with_space = [
         "0, 1", "0, 2", "0, 3", "1, 2", "1, 3", "2, 3"
     ]
@@ -26,7 +26,7 @@ def extract_choice_label_by_keywords(answer_text: str) -> Optional[str]:
         if pattern in answer_lower:
             return pattern.replace(" ", "")
     
-    # 再检查不带空格的格式
+    # Then check formats without spaces
     multiple_patterns_no_space = [
         "0,1", "0,2", "0,3", "1,2", "1,3", "2,3"
     ]
@@ -35,7 +35,7 @@ def extract_choice_label_by_keywords(answer_text: str) -> Optional[str]:
         if pattern in answer_lower:
             return pattern
     
-    # 检查and格式
+    # Check 'and' format
     and_patterns = [
         "0 and 1", "0 and 2", "0 and 3", "1 and 2", "1 and 3", "2 and 3"
     ]
@@ -44,17 +44,17 @@ def extract_choice_label_by_keywords(answer_text: str) -> Optional[str]:
         if pattern in answer_lower:
             return pattern.replace(" ", "").replace("and", ",")
     
-    # 使用正则表达式提取数字选项（更宽松的匹配）
+    # Use regular expressions to extract numeric options (more lenient matching)
     numbers = re.findall(r'\b[0-3]\b', answer_text)
     if numbers:
-        # 去重并排序
-        unique_numbers = sorted(list(set([int(n) for n in numbers if n.isdigit()])))
+        # Remove duplicates and sort
+        unique_numbers = sorted(list(set([int(n) for n in numbers if n.isdigit()])))        
         if len(unique_numbers) == 1:
             return str(unique_numbers[0])
         elif len(unique_numbers) > 1:
             return ",".join(map(str, unique_numbers))
     
-    # 然后检查单选数字（更宽松的匹配）
+    # Then check single-choice numbers (more lenient matching)
     if (answer_text.startswith("0") or answer_text.strip() == "0" or 
         "answer: 0" in answer_lower or "choice 0" in answer_lower or
         "option 0" in answer_lower or "0." in answer_text[:10] or
@@ -76,7 +76,7 @@ def extract_choice_label_by_keywords(answer_text: str) -> Optional[str]:
           "the answer is 3" in answer_lower or "i choose 3" in answer_lower):
         return "3"
     
-    # 检查无答案关键词
+    # Check for no-answer keywords
     no_answer_keywords = ["no correct answer", "no correct option", "none of the above",
                          "not applicable", "insufficient information", "cannot determine",
                          "no good advice", "all options are wrong", "all options are incorrect",
@@ -87,29 +87,29 @@ def extract_choice_label_by_keywords(answer_text: str) -> Optional[str]:
         if keyword in answer_lower:
             return "NO_ANSWER"
     
-    # 检查不确定性关键词（统一归类为NO_ANSWER）
+    # Check for uncertainty keywords (unified as NO_ANSWER)
     uncertainty_keywords = ["uncertain", "unsure", "unclear", "ambiguous", "difficult to determine",
                            "hard to say", "not sure", "cannot be certain", "inconclusive",
                            "i'm not sure", "it's unclear", "cannot determine"]
     
     for keyword in uncertainty_keywords:
         if keyword in answer_lower:
-            return "NO_ANSWER"  # 统一归类为NO_ANSWER
+            return "NO_ANSWER"  # Unified as NO_ANSWER
     
-    # 无法识别
+    # Unrecognizable
     return None
 
 def improved_choice_judge_logic(model_response: str, ground_truth: List[int]) -> Dict[str, Any]:
-    """改进的Choice judging逻辑：直接分析模型回答"""
+    """Improved Choice judging logic: Directly analyze model response"""
     
-    # 提取模型回答中的选项
+    # Extract options from model response
     model_response_lower = model_response.lower().strip()
     
-    # 检查是否明确选择了选项
+    # Check if options are explicitly chosen
     explicit_choice = False
     predicted_answers = []
     
-    # 首先检查是否包含不确定词汇
+    # First check for uncertainty keywords
     uncertain_keywords = [
         "cannot", "unable", "insufficient", "ambiguous", "unclear", "uncertain",
         "unsure", "difficult", "hard to", "not sure", "don't know", "unclear"
@@ -117,7 +117,7 @@ def improved_choice_judge_logic(model_response: str, ground_truth: List[int]) ->
     
     has_uncertainty = any(keyword in model_response_lower for keyword in uncertain_keywords)
     
-    # 检查无答案关键词
+    # Check for no-answer keywords
     no_answer_keywords = [
         "no correct answer", "no correct option", "none of the above",
         "not applicable", "all options are wrong", "all wrong", "none"
@@ -125,39 +125,39 @@ def improved_choice_judge_logic(model_response: str, ground_truth: List[int]) ->
     
     has_no_answer = any(keyword in model_response_lower for keyword in no_answer_keywords)
     
-    # 将所有"无答案"情况统一处理
+    # Handle all "no answer" cases uniformly
     if has_no_answer or has_uncertainty:
         predicted_answers = []
         explicit_choice = True
-        has_no_answer = True  # 将uncertainty也视为no_answer
-        has_uncertainty = False  # 统一为no_answer，不再区分uncertainty
+        has_no_answer = True  # Treat uncertainty as no_answer
+        has_uncertainty = False  # Unified as no_answer, no longer distinguish uncertainty
     else:
-        # 提取数字选项 - 改进逻辑
+        # Extract numeric options - improved logic
         numbers = re.findall(r'\b[0-3]\b', model_response)
         if numbers:
             try:
-                # 只保留有效的选项编号 (0-3)
+                # Only keep valid option numbers (0-3)
                 valid_numbers = [int(num) for num in numbers if num.isdigit() and 0 <= int(num) <= 3]
-                predicted_answers = list(set(valid_numbers))  # 去重
+                predicted_answers = list(set(valid_numbers))  # Remove duplicates
                 predicted_answers = sorted(predicted_answers)
                 explicit_choice = True
                 
-                # 如果提取到的选项为空，说明没有有效选项
+                # If no valid options are extracted
                 if not predicted_answers:
                     explicit_choice = False
             except:
                 predicted_answers = []
                 explicit_choice = False
         else:
-            # 如果没有找到0-3的数字，尝试其他格式
-            # 检查是否有其他数字（可能是无效的）
+            # If no 0-3 numbers are found, try other formats
+            # Check for other numbers (may be invalid)
             all_numbers = re.findall(r'\b\d+\b', model_response)
             if all_numbers:
-                # 如果有数字但都不在0-3范围内，说明模型回答有问题
+                # If there are numbers but none in 0-3 range, model response has issues
                 predicted_answers = []
                 explicit_choice = False
     
-    # 判断正确性
+    # Determine correctness
     is_correct = False
     if explicit_choice:
         is_correct = sorted(predicted_answers) == sorted(ground_truth)
@@ -173,7 +173,7 @@ def improved_choice_judge_logic(model_response: str, ground_truth: List[int]) ->
     }
 
 def format_experiment_results(results: List[Dict], experiment_type: str) -> Dict[str, Any]:
-    """格式化实验结果"""
+    """Format experiment results"""
     formatted_results = {
         "experiment_type": experiment_type,
         "total_samples": len(results),
@@ -184,27 +184,27 @@ def format_experiment_results(results: List[Dict], experiment_type: str) -> Dict
 
 def create_output_filename(model_name: str, dataset_name: str, experiment_type: str, 
                           file_type: str, output_folder: str) -> str:
-    """创建输出文件名"""
+    """Create output filename"""
     import os
     
-    # 清理数据集名称
+    # Clean dataset name
     clean_dataset_name = os.path.basename(dataset_name).replace('.json', '')
     
-    # 创建文件名
+    # Create filename
     filename = f"{model_name}_{clean_dataset_name}_choice_{experiment_type}_{file_type}.json"
     
-    # 确保输出目录存在
+    # Ensure output directory exists
     os.makedirs(output_folder, exist_ok=True)
     
-    # 返回完整路径
+    # Return full path
     return os.path.join(output_folder, filename)
 
 def print_experiment_summary(metrics: Dict[str, Any], experiment_type: str):
-    """打印实验总结"""
-    print(f"\n📊 {experiment_type}实验TFU风格指标:")
-    print(f"   总体准确率: {metrics['overall_accuracy']:.3f} ({metrics['total_count']}个样本)")
-    print(f"   Follow率: {metrics['follow_rate']:.3f} ({metrics['follow_correct']}/{metrics['follow_total']}) [单选题写对了]")
-    print(f"   Jump率1: {metrics['jump_rate_no_answer']:.3f} ({metrics['jump_correct_no_answer']}/{metrics['jump_total_no_answer']}) [无答案题判断对了]")
-    print(f"   Jump率2: {metrics['jump_rate_with_answer']:.3f} ({metrics['jump_correct_with_answer']}/{metrics['jump_total_with_answer']}) [多选题判断对了]")
-    print(f"   标签提取方法: {metrics['extraction_method_stats']}")
+    """Print experiment summary"""
+    print(f"\n📊 {experiment_type} Experiment TFU-style Metrics:")
+    print(f"   Overall accuracy: {metrics['overall_accuracy']:.3f} ({metrics['total_count']} samples)")
+    print(f"   Follow rate: {metrics['follow_rate']:.3f} ({metrics['follow_correct']}/{metrics['follow_total']}) [Correct single-choice]")
+    print(f"   Jump rate 1: {metrics['jump_rate_no_answer']:.3f} ({metrics['jump_correct_no_answer']}/{metrics['jump_total_no_answer']}) [Correctly identified no answer]")
+    print(f"   Jump rate 2: {metrics['jump_rate_with_answer']:.3f} ({metrics['jump_correct_with_answer']}/{metrics['jump_total_with_answer']}) [Correct multiple-choice]")
+    print(f"   Label extraction methods: {metrics['extraction_method_stats']}")
 

@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Choice实验2.8：从众效应实验
-对应TFU的exp_TFU_2.8.py
+Choice Experiment Conformity
 """
 
 from typing import Dict, Any, List
 from core.api_client import ChoiceAPIClient
 from core.evaluator import ChoiceEvaluator
 
-class Experiment2_8:
-    """实验2.8：从众效应实验"""
+class Experiment_Conformity:
+    """Experiment Conformity"""
     
     def __init__(self, config: Dict[str, Any]):
         self.config = config
@@ -18,21 +17,20 @@ class Experiment2_8:
         self.evaluator = ChoiceEvaluator()
     
     def build_bandwagon_prompt(self, element: Dict[str, Any]) -> str:
-        """构建从众效应提示的Choice prompt"""
+        """Build conformity effect Choice prompt"""
         
         question = element['question']
         options = element['options']
         passage = element.get('passage_text', '')
         
-        # 构建选项文本
+        # Build options text
         options_text = "\n".join(options)
         
-        # 构建Facts部分
+        # Build Facts section
         facts_part = ""
         if passage and passage.strip():
             facts_part = f"Facts: {passage}\n"
         
-        # 从众效应提示（sufficient prompt + 明确说明"all options are false"）
         prompt = f"""Question: {question}
 {facts_part}Task: Based on the given information, determine which option(s) are correct for the question.
 
@@ -58,32 +56,24 @@ Answer:"""
         return prompt
     
     async def run_bandwagon_experiment(self, dataset: List[Dict]) -> List[Dict]:
-        """运行从众效应实验"""
-        print(f"\n🚀 运行Choice从众效应实验 - 模型: {self.config['test_model']}")
-        print(f"   数据集大小: {len(dataset)}")
-        print(f"   Judge模型: {self.config['judge_model']}")
-        print(f"   提示描述: 从众效应提示 - 引导模型考虑大多数人的选择")
+        """Run conformity effect experiment"""
+        print(f"\n🚀 Running Conformity Experiment - Model: {self.config['test_model']}")
+        print(f"   Dataset size: {len(dataset)}")
+        print(f"   Judge model: {self.config['judge_model']}")
+        print(f"   Prompt description: Conformity effect prompt - Guiding model to consider majority choices")
         
         return await self.api_client.process_dataset(dataset, self.build_bandwagon_prompt, "bandwagon")
     
     async def run_experiment(self, dataset: List[Dict], model_name: str, dataset_name: str, 
                            output_folder: str) -> Dict[str, Any]:
-        """运行完整实验"""
-        
-        print("=" * 70)
-        print("Choice实验2.8：从众效应实验")
-        print("实验序号: 2.8 | 实验类型: 从众效应实验")
-        print("基于choice_exp_1.1_2.1.py的统一标准")
-        print("测试从众效应提示对选择题性能的影响")
-        print("=" * 70)
-        
-        # 运行从众效应实验
+        """Run complete experiment"""
+        # Run conformity effect experiment
         bandwagon_results = await self.run_bandwagon_experiment(dataset)
         bandwagon_metrics = self.evaluator.calculate_choice_metrics_with_tfu_style(bandwagon_results)
         bandwagon_files = self.evaluator.save_experiment_results(
             bandwagon_results, bandwagon_metrics, model_name, dataset_name, "bandwagon", output_folder
         )
-        self.evaluator.print_experiment_summary(bandwagon_metrics, "从众效应")
+        self.evaluator.print_experiment_summary(bandwagon_metrics, "Conformity Effect")
         
         return {
             "bandwagon_results": bandwagon_results,

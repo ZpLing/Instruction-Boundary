@@ -1,2 +1,0 @@
-# Choice Toolkit Configuration Module
-

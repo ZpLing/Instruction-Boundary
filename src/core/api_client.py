@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Choice Toolkit - API客户端模块
-统一的API调用和LLM Judge功能
+Choice Toolkit - API Client Module
+Unified API calling and LLM Judge functionality
 """
 
 import asyncio
@@ -11,7 +11,7 @@ from typing import List, Dict, Any, Tuple
 from .utils import extract_choice_label_by_keywords, improved_choice_judge_logic
 
 class ChoiceAPIClient:
-    """Choice API客户端"""
+    """Choice API Client"""
     
     def __init__(self, config: Dict[str, Any]):
         self.config = config
@@ -22,7 +22,7 @@ class ChoiceAPIClient:
         self.semaphore = asyncio.Semaphore(config.get("semaphore_limit", 50))
     
     async def call_openai(self, msg: List[Dict]) -> str:
-        """调用OpenAI API"""
+        """Call OpenAI API"""
         async with self.semaphore:
             try:
                 response = await self.client.chat.completions.create(
@@ -34,11 +34,11 @@ class ChoiceAPIClient:
                 content = response.choices[0].message.content
                 return content.strip() if content else "ERROR"
             except Exception as e:
-                print(f"API调用错误: {e}")
+                print(f"API call error: {e}")
                 return "ERROR"
     
     async def llm_judge_extract_choice_label(self, answer_text: str) -> str:
-        """使用LLM judge来提取Choice标签"""
+        """Use LLM judge to extract Choice label"""
         judge_prompt = f"""Analyze the following LLM response and determine which option(s) it selected:
 
 Response content: "{answer_text}"
@@ -55,7 +55,7 @@ Please respond with only the corresponding label, no other explanation."""
 
         try:
             response = await self.client.chat.completions.create(
-                model=self.config["judge_model"],  # 使用gpt-4o作为Judge
+                model=self.config["judge_model"],  # Using gpt-4o as Judge
                 messages=[{"role": "user", "content": judge_prompt}],
                 max_tokens=20,
                 temperature=0.0
@@ -66,24 +66,24 @@ Please respond with only the corresponding label, no other explanation."""
             return judge_result
             
         except Exception as e:
-            print(f"⚠️  LLM Judge调用错误: {e}")
-            return "UNCLEAR"  # 默认返回UNCLEAR
+            print(f"⚠️  LLM Judge call error: {e}")
+            return "UNCLEAR"  # Default return UNCLEAR
     
     async def hybrid_extract_choice_label(self, answer_text: str) -> Tuple[str, str]:
-        """混合策略：先尝试关键词匹配，无法识别时使用LLM judge"""
-        # 先尝试关键词匹配
+        """Hybrid strategy: try keyword matching first, use LLM judge when unrecognizable"""
+        # Try keyword matching first
         keyword_result = extract_choice_label_by_keywords(answer_text)
         if keyword_result is not None:
             return keyword_result, "keyword"
         
-        # 关键词无法识别，使用LLM judge
+        # Keyword unrecognizable, use LLM judge
         llm_result = await self.llm_judge_extract_choice_label(answer_text)
         return llm_result, "llm_judge"
     
     async def process_single_element(self, element: Dict[str, Any], prompt_builder, 
                                    index: int, experiment_type: str) -> Dict[str, Any]:
-        """处理单个元素"""
-        # 构建prompt
+        """Process single element"""
+        # Build prompt
         prompt_content = prompt_builder(element)
         
         msg = [{
@@ -91,13 +91,13 @@ Please respond with only the corresponding label, no other explanation."""
             "content": prompt_content
         }]
         
-        # 获取模型回答
+        # Get model answer
         answer = await self.call_openai(msg)
         
-        # 使用混合策略提取标签
+        # Extract label using hybrid strategy
         extracted_label, extraction_method = await self.hybrid_extract_choice_label(answer)
         
-        # 使用改进的judging逻辑评估
+        # Evaluate using improved judging logic
         judge_result = improved_choice_judge_logic(answer, element.get('correct_answers', []))
         
         return {
@@ -113,24 +113,24 @@ Please respond with only the corresponding label, no other explanation."""
     
     async def process_dataset(self, dataset: List[Dict], prompt_builder, 
                             experiment_type: str) -> List[Dict]:
-        """处理整个数据集"""
-        print(f"\n🚀 运行Choice {experiment_type}实验 - 模型: {self.config['test_model']}")
-        print(f"   数据集大小: {len(dataset)}")
-        print(f"   Judge模型: {self.config['judge_model']}")
+        """Process entire dataset"""
+        print(f"\n🚀 Running Choice {experiment_type} experiment - Model: {self.config['test_model']}")
+        print(f"   Dataset size: {len(dataset)}")
+        print(f"   Judge model: {self.config['judge_model']}")
         
-        # 创建任务
+        # Create tasks
         tasks = []
         for i, element in enumerate(dataset):
             task = self.process_single_element(element, prompt_builder, i, experiment_type)
             tasks.append(task)
         
-        # 执行任务
+        # Execute tasks
         results = []
         for task in asyncio.as_completed(tasks):
             result = await task
             results.append(result)
         
-        # 按索引排序
+        # Sort by index
         results.sort(key=lambda x: x.get('index', 0))
         
         return results
