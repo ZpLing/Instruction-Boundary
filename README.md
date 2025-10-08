@@ -10,11 +10,11 @@
 
 </div>
 
-This toolkit implements **6 experimental settings** that systematically evaluate how Large Language Models (LLMs) handle instruction following in multiple choice scenarios. The experiments are adapted from the original TFU (Truth Following Under Uncertainty) framework, providing a standardized approach to assess model behavior across different prompt strategies and cognitive biases.
+This toolkit implements **8 experimental settings** that systematically evaluate how Large Language Models (LLMs) handle instruction following in multiple choice scenarios. The experiments are adapted from the original TFU (Truth Following Under Uncertainty) framework, providing a standardized approach to assess model behavior across different prompt strategies and cognitive biases.
 
 ## ✨ Key Features
 
-- 🔬 **6 Comprehensive Experiments**: Systematic evaluation of instruction following capabilities
+- 🔬 **8 Comprehensive Experiments**: Systematic evaluation of instruction following capabilities
 - 🎨 **Dual Format Support**: Automatic detection and conversion between Choice and TFU formats
 - 🤖 **Multi-Model Support**: Compatible with GPT-4o, Claude, Llama, and Gemini
 - 📊 **Rich Evaluation Metrics**: Follow rate, Jump rate, and TFU-style analysis
@@ -28,7 +28,7 @@ This toolkit implements **6 experimental settings** that systematically evaluate
 ```bash
 # Clone the repository
 git clone https://github.com/ZpLing/Instruction-Boundary.git
-cd Instruction-Boundary/choice_toolkit
+cd Instruction-Boundary/src/scripts
 
 # Install dependencies
 pip install -r requirements.txt
@@ -37,127 +37,150 @@ pip install -r requirements.txt
 ### 🔑 API Configuration
 
 ```bash
-# Set your OpenAI API key
-export OPENAI_API_KEY="your-api-key-here"
+# Set your API key
+export API_KEY="your-api-key-here"
 
 # Optional: Set custom base URL (for custom API endpoints)
-export OPENAI_BASE_URL="https://api.openai.com/v1"
+export BASE_URL="https://api.openai.com/v1"
 ```
 
-> ⚠️ **Security Note**: Never commit your actual API key to the repository. Always use environment variables.
+> ⚠️ **Security Note**: Never commit your actual API key to the repository. Always use environment variables. In addition, we use the Openai SDK, so the official Claude API Request is not supported.
 
 ### 🎮 Running Experiments
 
 ```bash
 # 📋 List all available experiments
-python main.py --list
+python src/scripts/main.py --list
 
 # 🚀 Run all experiments
-python main.py --all
+python src/scripts/main.py --all
 
 # 🎯 Run specific experiments
-python main.py --experiment 1.1_2.1,2.3
+python src/scripts/main.py --experiment 1,2 
 
 # 🤖 Run with specific model
-python main.py --model gpt-4o --experiment 1.1_2.1
+python src/scripts/main.py --model gpt-4o --experiment 1
 
 # 📊 Quick test (recommended for first run)
-python test_imports.py
+python src/scripts/test_api.py
+python src/scripts/test_toolkit.py
 ```
 
 ### ⚡ 30-Second Demo
 
 ```bash
 # Quick start with interactive menu
-python quick_start.py
+python src/scripts/quick_start.py
 ```
 
 
 ## 🧪 Experimental Settings
 
-The toolkit implements **6 comprehensive experimental settings** that systematically evaluate different aspects of LLM instruction following behavior:
+The toolkit implements **8 comprehensive experimental settings** that systematically evaluate different aspects of LLM instruction following behavior:
 
 <div align="center">
 
-| 🎯 Experiment | 📝 Description | 🔬 Focus Area | 📊 Original TFU |
-|---------------|----------------|---------------|-----------------|
-| **1.1_2.1** | Sufficient vs Insufficient Prompts | Information Completeness | exp_TFU_1.1_2.1.py |
-| **1.2** | Few-shot Learning | Learning from Examples | exp_TFU_1.2.py |
-| **2.3** | Ambiguous Prompts | Uncertainty Handling | exp_TFU_2.3.py |
-| **2.5** | LLM Polished Prompts | Prompt Optimization | exp_TFU_2.5.py |
-| **2.6** | Multi-turn Conversation | Self-Reflection | exp_TFU_2.6.py |
-| **2.8** | Bandwagon Effect | Social Bias | exp_TFU_2.8.py |
+| 🎯 Experiment | 📝 Description | 🔬 Focus Area |
+|---------------|----------------|---------------|
+| **1** | Vanilla Scenario | Information Completeness |
+| **2** | Multi-turn Dialogue | Self-Reflection |
+| **3** | Conformity | Social Bias | 
+| **4** | Disturbing Miscellany | Robustness |
+| **5** | Few-shot Learning | Learning from Examples |
+| **6** | Missing Choices | Information Completeness |
+| **7** | Vaugeness | Uncertainty Handling |
+| **8** | Prompt Polishing | Prompt Optimization |
 
 </div>
 
 ### 🔬 Detailed Experimental Descriptions
 
-#### 🎯 **1.1_2.1 - Sufficient vs Insufficient Prompts**
-- **Objective**: Evaluate how information completeness affects model performance
-- **Method**: Compare responses with full context vs. missing critical information
-- **Metrics**: Accuracy difference, confidence levels, error patterns
-- **Insight**: Tests model's dependency on complete information
+#### 📘 **1 - Vanilla Scenario**
+- **Objective**: Ensure information completeness and unbiased guidance
+- **Method**: Use comprehensive prompts with detailed instructions
+- **Metrics**: Accuracy, coverage, unbiasedness
+- **Insight**: Establishes a baseline for model performance
 
-#### 🎓 **1.2 - Few-shot Learning**
-- **Objective**: Assess model's ability to learn from examples
-- **Method**: Provide 1-3 example demonstrations before target questions
-- **Metrics**: Learning curve, example utilization, generalization
-- **Insight**: Evaluates in-context learning capabilities
-
-#### ❓ **2.3 - Ambiguous Prompts**
-- **Objective**: Test model behavior with unclear instructions
-- **Method**: Use minimal, vague prompts with reduced guidance
-- **Metrics**: Uncertainty handling, interpretation consistency
-- **Insight**: Measures robustness to ambiguous inputs
-
-#### ✨ **2.5 - LLM Polished Prompts**
-- **Objective**: Test if model-generated prompts improve performance
-- **Method**: Use LLM-refined versions of insufficient prompts
-- **Metrics**: Prompt effectiveness, self-improvement capability
-- **Insight**: Evaluates model's prompt optimization skills
-
-#### 🔄 **2.6 - Multi-turn Conversation**
+#### 🔄 **2 - Multi-turn Conversation**
 - **Objective**: Assess self-reflection and iterative improvement
 - **Method**: Two-round conversations with reflection prompts
 - **Metrics**: Improvement rate, consistency, self-correction
 - **Insight**: Tests reasoning and self-correction abilities
 
-#### 👥 **2.8 - Bandwagon Effect**
+#### 👥 **3 - Conformity**
 - **Objective**: Evaluate susceptibility to social bias
 - **Method**: Include misleading hints about "popular" answers
 - **Metrics**: Conformity rate, bias resistance, critical thinking
 - **Insight**: Tests independence from social influence
 
+#### 🌀 **4 - Disturbing Miscellany**
+- **Objective**: Test robustness against distracting information
+- **Method**: Add unrelated options to the prompt
+- **Metrics**: Deviation rate, accuracy under distraction, resilience
+- **Insight**: Measures model's ability to ignore irrelevant details
+
+#### 🎓 **5 - Few-shot Learning**
+- **Objective**: Assess model's ability to learn from examples
+- **Method**: Provide 1-3 example demonstrations before target questions
+- **Metrics**: Learning curve, example utilization, generalization
+- **Insight**: Evaluates in-context learning capabilities
+
+#### 🚫 **6 - Missing Choices**
+- **Objective**: Assess impact of incomplete options on decision-making
+- **Method**: Omit some correct options from the prompt
+- **Metrics**: Omission detection, decision bias, accuracy
+- **Insight**: Evaluates model's reliance on complete information
+
+#### ❓ **7 - Vaugeness**
+- **Objective**: Test model behavior with unclear instructions
+- **Method**: Use minimal, vague prompts with reduced guidance
+- **Metrics**: Uncertainty handling, interpretation consistency
+- **Insight**: Measures robustness to ambiguous inputs
+
+#### ✨ **8 - Prompt Polishing**
+- **Objective**: Test if model-generated prompts improve performance
+- **Method**: Use LLM-refined versions of insufficient prompts
+- **Metrics**: Prompt effectiveness, self-improvement capability
+- **Insight**: Evaluates model's prompt optimization skills
+
 ## 📁 Project Structure
 
 ```
-choice_toolkit/
-├── 📁 config/                          # Configuration files
-│   ├── model_config.py                 # Model and API settings
-│   └── experiment_config.py            # Experiment parameters
-├── 📁 core/                            # Core functionality
-│   ├── api_client.py                   # API communication
-│   ├── data_loader.py                  # Dataset loading and processing
-│   ├── evaluator.py                    # Evaluation metrics
-│   └── utils.py                        # Utility functions
-├── 📁 experiments/                     # Individual experiment implementations
-│   ├── exp_1_1_2_1.py                 # Sufficient vs Insufficient prompts
-│   ├── exp_1_2.py                      # Few-shot learning
-│   ├── exp_2_3.py                      # Ambiguous prompts
-│   ├── exp_2_5.py                      # LLM polished prompts
-│   ├── exp_2_6.py                      # Multi-turn conversation
-│   └── exp_2_8.py                      # Bandwagon effect
-├── 📁 results/                         # Output directories (auto-created)
-├── 📄 main.py                          # Main execution script
-├── 📄 quick_start.py                   # Interactive quick start
-├── 📄 example_usage.py                 # Usage examples
-├── 📄 test_imports.py                  # Import validation
-├── 📄 test_toolkit.py                  # Comprehensive tests
-├── 📊 mixed_450_qa_dataset.json        # Choice format dataset (450 samples)
-├── 📊 choice_tfu_format_dataset.json   # TFU format dataset (450 samples)
-├── ⚙️ choice_config.json               # Dataset configuration
-├── 📋 requirements.txt                 # Python dependencies
-└── 📖 README.md                        # This file
+Demo/
+├── 📁 src/                              # Source code directory
+│   ├── 📁 config/                        # Configuration files
+│   │   ├── __init__.py                   # Package initialization
+│   │   ├── experiment_config.py          # Experiment parameters
+│   │   └── model_config.py               # Model and API settings
+│   ├── 📁 core/                          # Core functionality
+│   │   ├── __init__.py                   # Package initialization
+│   │   ├── api_client.py                 # API communication
+│   │   ├── data_loader.py                # Dataset loading and processing
+│   │   ├── evaluator.py                  # Evaluation metrics
+│   │   └── utils.py                      # Utility functions
+│   ├── 📁 dataset/                       # Datasets
+│   │   ├── choice_config.json            # Dataset configuration
+│   │   ├── choice_tfu_format_dataset.json # TFU format dataset
+│   │   └── mixed_450_qa_dataset.json     # Choice format dataset (450 samples)
+│   ├── 📁 experiments/                   # Individual experiment implementations
+│   │   ├── __init__.py                   # Package initialization
+│   │   ├── Conformity.py                 # Bandwagon effect experiment
+│   │   ├── Disturbing_Miscellany.py      # Insufficient information experiment
+│   │   ├── Few_shot_Learning.py          # Few-shot learning experiment
+│   │   ├── Missing_Choices.py            # Missing options experiment
+│   │   ├── Multi_turn_Dialogue.py        # Multi-turn conversation experiment
+│   │   ├── Prompt_Polishing.py           # LLM polished prompts experiment
+│   │   ├── Vanilla_Scenario.py           # Standard scenario experiment
+│   │   └── Vaugeness.py                  # Ambiguous prompts experiment
+│   ├── 📁 outputs/                       # Output directories (auto-created)
+│   └── 📁 scripts/                       # Execution scripts
+│       ├── example_usage.py              # Usage examples
+│       ├── main.py                       # Main execution script
+│       ├── quick_start.py                # Interactive quick start
+│       ├── test_api.py                   # API connection test
+│       └── test_toolkit.py               # Comprehensive tests
+├── 📋 requirements.txt                   # Python dependencies
+└── 📖 README.md                          # This file
 ```
 
 ## 📊 Dataset Formats
@@ -201,15 +224,11 @@ The toolkit intelligently detects format based on field presence:
 Results are automatically saved in the `results/` directory with comprehensive analysis:
 
 ```
-results/
-├── 📁 experiment_data_choice_1_2/           # Experiment 1.1_2.1 results
-│   ├── 📄 gpt-4o_mixed_450_qa_sufficient_evaluation.json
-│   ├── 📄 gpt-4o_mixed_450_qa_insufficient_evaluation.json
-│   └── 📊 gpt-4o_mixed_450_qa_sufficient_vs_insufficient_comparison.json
-├── 📁 experiment_data_choice_2_3/           # Experiment 2.3 results
+outputs/
+├── 📁 experiment_data_choice_Multi_turn_Dialogue/           # Experiment 2 results
 │   └── 📄 gpt-4o_mixed_450_qa_ambiguous_evaluation.json
-└── 📁 experiment_data_choice_2_6/           # Experiment 2.6 results
-    └── 📄 gpt-4o_mixed_450_qa_multi_turn_evaluation.json
+└── 📁 experiment_data_choice_Prompt_Polishing/           # Experiment 8 results
+    └── 📄 gpt-4o_mixed_450_qa_prompt_polishing_evaluation.json
 ```
 
 ### 📊 **Output File Types**
@@ -218,7 +237,6 @@ results/
 |--------------|----------------|------------|
 | **Evaluation Results** | Detailed responses and analysis | Model outputs, extracted labels, judge evaluations |
 | **Accuracy Analysis** | Performance metrics | Follow rate, Jump rate, overall accuracy |
-| **Comparison Summaries** | Cross-experiment analysis | Statistical comparisons, performance differences |
 | **TFU-style Metrics** | Specialized evaluation | Cognitive bias analysis, reasoning patterns |
 
 ### 📈 **Key Metrics**
@@ -243,7 +261,7 @@ async def basic_experiment():
     toolkit = ChoiceToolkit(model_name="gpt-4o")
     
     # Run single experiment
-    results = await toolkit.run_single_experiment("1.1_2.1", dataset, "mixed_450_qa")
+    results = await toolkit.run_single_experiment("1", dataset, "mixed_450_qa")
     
     # Print results
     print(f"Experiment completed with {len(results)} samples")
@@ -260,7 +278,7 @@ async def comprehensive_evaluation():
     toolkit = ChoiceToolkit(model_name="gpt-4o")
     
     # Define experiment suite
-    experiments = ["1.1_2.1", "2.3", "2.6", "2.8"]
+    experiments = ["1", "2", "3", "4"]
     
     # Run multiple experiments
     results = await toolkit.run_experiments(experiments)
@@ -282,7 +300,7 @@ async def model_comparison():
     for model in models:
         print(f"\n🧪 Testing {model}...")
         toolkit = ChoiceToolkit(model_name=model)
-        results = await toolkit.run_experiments(["1.1_2.1"])
+        results = await toolkit.run_experiments(["1"])
         print(f"✅ {model} completed")
 
 # Run model comparison
@@ -293,7 +311,7 @@ asyncio.run(model_comparison())
 
 ```bash
 # 🎯 Run specific experiments
-python main.py --experiment 1.1_2.1,2.3,2.6 --model gpt-4o
+python main.py --experiment 1,2,3 --model gpt-4o
 
 # 🚀 Run all experiments
 python main.py --all --model claude-3-7-sonnet-20250219
@@ -305,7 +323,8 @@ python main.py --list
 python quick_start.py
 
 # 🧪 Run test suite
-python test_imports.py
+python test_api.py
+python test_toolkit.py
 ```
 
 ### 📊 **Custom Dataset Usage**
@@ -319,7 +338,7 @@ custom_dataset, types, name = data_loader.load_and_prepare_dataset("your_dataset
 
 # Run experiments on custom data
 toolkit = ChoiceToolkit()
-results = await toolkit.run_single_experiment("2.3", custom_dataset, name)
+results = await toolkit.run_single_experiment("2", custom_dataset, name)
 ```
 
 ## 🤖 Supported Models
