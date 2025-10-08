@@ -225,10 +225,12 @@ Results are automatically saved in the `results/` directory with comprehensive a
 
 ```
 outputs/
-├── 📁 experiment_data_choice_Multi_turn_Dialogue/           # Experiment 2 results
-│   └── 📄 gpt-4o_mixed_450_qa_ambiguous_evaluation.json
-└── 📁 experiment_data_choice_Prompt_Polishing/           # Experiment 8 results
-    └── 📄 gpt-4o_mixed_450_qa_prompt_polishing_evaluation.json
+├── 📁 experiment_data_choice_Vanilla_Scenario/           # Experiment 1 results
+│   ├── 📄 gpt-4o_mixed_450_qa_dataset_choice_sufficient_accuracy.json
+│   └── 📄 gpt-4o_mixed_450_qa_dataset_choice_sufficient_evaluation.json
+└── 📁 experiment_data_choice_Missing_Choices/           # Experiment 6 results
+    ├── 📄 gpt-4o_choice_tfu_format_dataset_choice_insufficient_accuracy.json
+    └── 📄 gpt-4o_choice_tfu_format_dataset_choice_insufficient_evaluation.json
 ```
 
 ### 📊 **Output File Types**
