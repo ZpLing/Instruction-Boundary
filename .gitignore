@@ -13,7 +13,7 @@ api_keys.txt
 config.ini
 
 # Experiment results
-results/
+outputs/
 experiment_data*/
 
 # Logs

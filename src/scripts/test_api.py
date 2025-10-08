@@ -4,6 +4,7 @@
 Choice Toolkit - Test Script
 Test API connection
 """
+
 import openai
 import os
 
