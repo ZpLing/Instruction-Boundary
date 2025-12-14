@@ -78,9 +78,9 @@ DATASET_CONFIG = {
         "description": "900-sample mixed multiple-choice question dataset",
         "question_types": ["single_choice", "multiple_choice", "no_correct_answer"],
         "sample_counts": {
-            "single_choice": 150,
-            "multiple_choice": 150, 
-            "no_correct_answer": 150
+            "single_choice": 300,
+            "multiple_choice": 300, 
+            "no_correct_answer": 300
         }
     }
 }
