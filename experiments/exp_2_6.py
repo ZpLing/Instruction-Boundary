@@ -7,8 +7,8 @@ Choice实验2.6：多轮对话反思实验
 
 import asyncio
 from typing import Dict, Any, List
-from core.api_client import ChoiceAPIClient
-from core.evaluator import ChoiceEvaluator
+from ..core.api_client import ChoiceAPIClient
+from ..core.evaluator import ChoiceEvaluator
 
 class Experiment2_6:
     """实验2.6：多轮对话反思实验"""
@@ -129,7 +129,7 @@ Final Answer:"""
         extracted_label, extraction_method = await self.api_client.hybrid_extract_choice_label(final_answer)
         
         # 使用改进的judging逻辑评估
-        from core.utils import improved_choice_judge_logic
+        from ..core.utils import improved_choice_judge_logic
         judge_result = improved_choice_judge_logic(final_answer, element.get('correct_answers', []))
         
         return {
