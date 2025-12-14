@@ -5,8 +5,8 @@ Choice Experiment Conformity
 """
 
 from typing import Dict, Any, List
-from core.api_client import ChoiceAPIClient
-from core.evaluator import ChoiceEvaluator
+from ..core.api_client import ChoiceAPIClient
+from ..core.evaluator import ChoiceEvaluator
 
 class Experiment_Conformity:
     """Experiment Conformity"""
