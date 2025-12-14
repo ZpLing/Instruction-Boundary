@@ -52,7 +52,6 @@ experiment_results/
 *.log
 
 # Large dataset files (keep small samples only)
-mixed_900_qa_dataset.json
 *_full.json
 *_raw.json
 
