@@ -73,9 +73,9 @@ EXPERIMENT_CONFIGS = {
 
 # Dataset configuration
 DATASET_CONFIG = {
-    "mixed_450_qa": {
-        "file_name": "mixed_450_qa_dataset.json",
-        "description": "450-sample mixed multiple-choice question dataset",
+    "mixed_900_qa": {
+        "file_name": "mixed_900_qa_dataset.json",
+        "description": "900-sample mixed multiple-choice question dataset",
         "question_types": ["single_choice", "multiple_choice", "no_correct_answer"],
         "sample_counts": {
             "single_choice": 150,
@@ -109,7 +109,7 @@ def get_experiment_config(experiment_id: str) -> dict:
 
     return EXPERIMENT_CONFIGS[experiment_id]
 
-def get_dataset_config(dataset_name: str = "mixed_450_qa") -> dict:
+def get_dataset_config(dataset_name: str = "mixed_900_qa") -> dict:
     """Get dataset configuration"""
     if dataset_name not in DATASET_CONFIG:
         raise ValueError(f"Unsupported dataset: {dataset_name}")

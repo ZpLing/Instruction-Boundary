@@ -27,10 +27,10 @@ class ChoiceDataLoader:
             print(f"Configuration file {config_file} not found, using default configuration")
             return {
                 "datasets": {
-                    "mixed_450_qa": {
+                    "mixed_900_qa": {
                         "question_types": ["single_choice", "multiple_choice", "no_correct_answer"],
                         "description": "Mixed choice question dataset with 450 samples",
-                          "file_patterns": ["mixed_450_qa_dataset.json"],
+                          "file_patterns": ["mixed_900_qa_dataset.json"],
                     }
                 },
                 "default_config": {
@@ -47,7 +47,7 @@ class ChoiceDataLoader:
         
         # Check Choice format dataset
         choice_paths = [
-            os.path.join(dataset_dir, 'mixed_450_qa_dataset.json'),
+            os.path.join(dataset_dir, 'mixed_900_qa_dataset.json'),
             os.path.join(dataset_dir, 'choice_dataset.json'),
             os.path.join(dataset_dir, 'dataset.json')
         ]
@@ -144,7 +144,7 @@ class ChoiceDataLoader:
         
         # Get dataset configuration
         dataset_name = os.path.basename(dataset_file).replace('.json', '')
-        dataset_config = config.get("datasets", {}).get("mixed_450_qa", config.get("default_config", {}))
+        dataset_config = config.get("datasets", {}).get("mixed_900_qa", config.get("default_config", {}))
         print(f"Dataset configuration: {dataset_config.get('description', 'Default configuration')}")
         
         # Load data

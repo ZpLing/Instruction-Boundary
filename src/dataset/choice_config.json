@@ -1,9 +1,9 @@
 {
   "datasets": {
-    "mixed_450_qa": {
+    "mixed_900_qa": {
       "question_types": ["single_choice", "multiple_choice", "no_correct_answer"],
       "description": "450-sample mixed multiple-choice question dataset",
-      "file_patterns": ["mixed_450_qa_dataset.json"]
+      "file_patterns": ["mixed_900_qa_dataset.json"]
     },
     "choice_tfu_format": {
       "question_types": ["single_choice", "multiple_choice", "no_correct_answer"],
