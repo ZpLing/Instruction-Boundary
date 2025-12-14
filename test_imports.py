@@ -1,140 +1,125 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-测试Choice Toolkit的导入和基本功能
+Test Choice Toolkit imports and basic functionality
 """
 
 import sys
 import os
 
-# 添加当前目录到Python路径
+# Add current directory to Python path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 def test_imports():
-    """测试所有模块的导入"""
-    print("🧪 测试Choice Toolkit导入...")
+    """Test imports of all modules"""
+    print("🧪 Testing Choice Toolkit imports...")
     
     try:
-        # 测试配置文件导入
+        # Test config module imports
         from config.model_config import get_model_config, SUPPORTED_MODELS
-        print("✅ config.model_config 导入成功")
+        print("✅ config.model_config imported successfully")
         
-        from config.experiment_config import get_output_folder, get_execution_order
-        print("✅ config.experiment_config 导入成功")
+        from config.experiment_config import get_experiment_config, get_output_folder, get_execution_order
+        print("✅ config.experiment_config imported successfully")
         
-        # 测试核心模块导入
+        # Test core module imports
         from core.utils import validate_choice_element, extract_choice_label_by_keywords
-        print("✅ core.utils 导入成功")
+        print("✅ core.utils imported successfully")
         
         from core.evaluator import ChoiceEvaluator
-        print("✅ core.evaluator 导入成功")
+        print("✅ core.evaluator imported successfully")
         
         from core.data_loader import ChoiceDataLoader
-        print("✅ core.data_loader 导入成功")
+        print("✅ core.data_loader imported successfully")
         
-        # 测试实验模块导入
-        from experiments.exp_1_1_2_1 import Experiment1_1_2_1
-        print("✅ experiments.exp_1_1_2_1 导入成功")
+        # Test experiment module imports
+        from experiments.Vanilla_Scenario import Experiment_Vanilla_Scenario
+        print("✅ experiments.Vanilla_Scenario imported successfully")
         
-        from experiments.exp_1_2 import Experiment1_2
-        print("✅ experiments.exp_1_2 导入成功")
+        from experiments.Multi_turn_Dialogue import Experiment_Multi_turn_Dialogue
+        print("✅ experiments.Multi_turn_Dialogue imported successfully")
         
-        from experiments.exp_2_3 import Experiment2_3
-        print("✅ experiments.exp_2_3 导入成功")
+        from experiments.Conformity import Experiment_Conformity
+        print("✅ experiments.Conformity imported successfully")
         
-        from experiments.exp_2_5 import Experiment2_5
-        print("✅ experiments.exp_2_5 导入成功")
+        from experiments.Disturbing_Miscellany import Experiment_Disturbing_Miscellany
+        print("✅ experiments.Disturbing_Miscellany imported successfully")
         
-        from experiments.exp_2_6 import Experiment2_6
-        print("✅ experiments.exp_2_6 导入成功")
+        from experiments.Few_shot_Learning import Experiment_Few_shot_Learning
+        print("✅ experiments.Few_shot_Learning imported successfully")
         
-        from experiments.exp_2_8 import Experiment2_8
-        print("✅ experiments.exp_2_8 导入成功")
+        from experiments.Missing_Choices import Experiment_Missing_Choices
+        print("✅ experiments.Missing_Choices imported successfully")
         
-        print("\n🎉 所有模块导入成功！")
+        from experiments.Vaugeness import Experiment_Vaugeness
+        print("✅ experiments.Vaugeness imported successfully")
+        
+        from experiments.Prompt_Polishing import Experiment_Prompt_Polishing
+        print("✅ experiments.Prompt_Polishing imported successfully")
+        
+        print("\n🎉 All modules imported successfully!")
         return True
         
     except Exception as e:
-        print(f"❌ 导入失败: {e}")
+        print(f"❌ Import failed: {e}")
         return False
 
 def test_basic_functionality():
-    """测试基本功能"""
-    print("\n🧪 测试基本功能...")
+    """Test basic functionality"""
+    print("\n🧪 Testing basic functionality...")
     
     try:
         from config.model_config import get_model_config, SUPPORTED_MODELS
         from core.utils import validate_choice_element
         
-        # 测试配置获取
+        # Test config retrieval
         config = get_model_config()
-        print(f"✅ 模型配置获取成功: {config['test_model']}")
+        print(f"✅ Model config retrieved successfully: {config['test_model']}")
         
-        # 测试支持的模型
-        print(f"✅ 支持的模型: {SUPPORTED_MODELS}")
+        # Test supported models
+        print(f"✅ Supported models: {SUPPORTED_MODELS}")
         
-        # 测试数据验证
+        # Test data validation
         test_element = {
-            "question": "测试问题",
-            "options": ["选项1", "选项2", "选项3", "选项4"],
+            "question": "Test question",
+            "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
             "correct_answers": [0],
             "question_type": "single_choice"
         }
         
         is_valid = validate_choice_element(test_element)
-        print(f"✅ 数据验证功能正常: {is_valid}")
+        print(f"✅ Data validation working correctly: {is_valid}")
         
-        print("\n🎉 基本功能测试通过！")
+        print("\n🎉 Basic functionality tests passed!")
         return True
         
     except Exception as e:
-        print(f"❌ 功能测试失败: {e}")
+        print(f"❌ Functionality test failed: {e}")
         return False
 
 def main():
-    """主函数"""
+    """Main function"""
     print("=" * 60)
-    print("Choice Toolkit 导入和功能测试")
+    print("Choice Toolkit Import and Functionality Test")
     print("=" * 60)
     
-    # 测试导入
+    # Test imports
     import_success = test_imports()
     
     if import_success:
-        # 测试基本功能
+        # Test basic functionality
         functionality_success = test_basic_functionality()
         
         if functionality_success:
-            print("\n🎊 所有测试通过！Choice Toolkit准备就绪！")
+            print("\n🎊 All tests passed! Choice Toolkit is ready!")
             return 0
         else:
-            print("\n❌ 功能测试失败")
+            print("\n❌ Functionality test failed")
             return 1
     else:
-        print("\n❌ 导入测试失败")
+        print("\n❌ Import test failed")
         return 1
 
 if __name__ == "__main__":
     exit_code = main()
     sys.exit(exit_code)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
