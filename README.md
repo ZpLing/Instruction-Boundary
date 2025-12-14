@@ -340,26 +340,31 @@ The toolkit supports a wide range of state-of-the-art language models:
 
 > 💡 **Tip**: Start with GPT-4o for best results, then use other models for comparison studies.
 
-## 📚 Citation & Research
+## 📚 Research Applications
 
-If you use this toolkit in your research, please cite:
+This toolkit is designed for research purposes in the following areas:
 
-```bibtex
-@article{instruction_boundary_2025,
-  title={Instruction Boundary: A Comprehensive Toolkit for LLM Instruction Following Evaluation},
-  author={[Author Names]},
-  journal={arXiv preprint arXiv:2509.20278},
-  year={2025},
-  url={https://github.com/ZpLing/Instruction-Boundary}
-}
-```
-
-### 🔬 **Research Applications**
+### 🔬 **Application Domains**
 - **Cognitive Science**: Understanding LLM reasoning patterns
 - **AI Safety**: Evaluating instruction following robustness
 - **Prompt Engineering**: Optimizing prompt strategies
 - **Model Comparison**: Benchmarking different LLMs
 - **Bias Detection**: Identifying cognitive biases in AI systems
+
+### 📖 **Citation**
+
+If you use this toolkit in your research, please cite this repository:
+
+```bibtex
+@software{choice_toolkit_2025,
+  title={Choice Experiment Toolkit for LLM Evaluation},
+  author={Anonymous},
+  year={2025},
+  url={https://github.com/ZpLing/Instruction-Boundary}
+}
+```
+
+> **Note**: This is an anonymous submission. Full citation information will be provided upon publication.
 
 ## 🤝 Contributing
 
