@@ -19,7 +19,7 @@ SUPPORTED_MODELS = [
 # Default model configuration
 DEFAULT_MODEL_CONFIG = {
     "test_model": "gpt-4o",
-    "judge_model": "gpt-4o",  # Fixed to use gpt-4o as Judge
+    "judge_model": "deepseek-v3",  # Fixed to use deepseek-v3 as Judge
     "api_key": os.getenv("API_KEY", "YOUR_API_KEY_HERE"),
     "base_url": os.getenv("BASE_URL", "https://api.openai.com/v1"),
     "max_tokens": 4096,
