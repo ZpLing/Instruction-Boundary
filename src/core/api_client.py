@@ -55,7 +55,7 @@ Please respond with only the corresponding label, no other explanation."""
 
         try:
             response = await self.client.chat.completions.create(
-                model=self.config["judge_model"],  # Using deepseek-v3 as Judge
+                model=self.config["judge_model"],  # Using qwen-2.5-7b as Judge
                 messages=[{"role": "user", "content": judge_prompt}],
                 max_tokens=20,
                 temperature=0.0
