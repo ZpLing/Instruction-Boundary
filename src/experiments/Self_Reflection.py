@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Choice Experiment Multi-turn Dialogue
-"""
+
 
 import asyncio
 from typing import Dict, Any, List
